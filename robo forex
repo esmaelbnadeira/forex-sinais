@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Robo Forex Morena</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    * {margin:0; padding:0; box-sizing:border-box; font-family:'Roboto', sans-serif;}
+    body {background: linear-gradient(to right, #0f2027, #203a43, #2c5364); color:#fff; min-height:100vh; display:flex; justify-content:center; align-items:center;}
+    .container {background: rgba(0,0,0,0.75); padding:30px; border-radius:15px; width:95%; max-width:700px; box-shadow:0 0 20px rgba(0,0,0,0.6);}
+    h1 {text-align:center; margin-bottom:20px; color:#FFD700;}
+    label {display:block; margin:15px 0 5px; font-weight:700;}
+    select, input[type="file"], input[type="text"], input[type="password"] {width:100%; padding:10px; border-radius:8px; border:none; margin-bottom:10px;}
+    button {padding:12px 20px; border:none; border-radius:8px; cursor:pointer; font-weight:700; background:#FFD700; color:#000; transition:0.3s; margin-top:10px; width:100%;}
+    button:hover {background:#FFC107;}
+    .hidden {display:none;}
+    .message {margin-top:10px; padding:10px; border-radius:8px; text-align:center;}
+    .success {background:green; color:white;}
+    .error {background:red; color:white;}
+    .percent {margin-top:15px; text-align:center; font-size:18px;}
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <h1>ROBO FOREX MORENA</h1>
+
+  <!-- LOGIN -->
+  <div id="loginDiv">
+    <label>Email:</label>
+    <input type="text" id="email" placeholder="Digite seu email">
+    <label>Senha:</label>
+    <input type="password" id="senha" placeholder="Digite sua senha">
+    <button onclick="login()">Entrar</button>
+    <button onclick="registrar()">Criar Conta</button>
+    <div id="loginMsg" class="message"></div>
+  </div>
+
+  <!-- ROBO -->
+  <div id="roboDiv" class="hidden">
+    <label>Escolha o par de moeda:</label>
+    <select id="parMoeda">
+      <optgroup label="Majors">
+        <option value="EUR/USD">EUR/USD</option>
+        <option value="USD/JPY">USD/JPY</option>
+        <option value="GBP/USD">GBP/USD</option>
+        <option value="USD/CHF">USD/CHF</option>
+        <option value="AUD/USD">AUD/USD</option>
+        <option value="USD/CAD">USD/CAD</option>
+        <option value="NZD/USD">NZD/USD</option>
+      </optgroup>
+      <optgroup label="Crosses">
+        <option value="EUR/GBP">EUR/GBP</option>
+        <option value="EUR/CHF">EUR/CHF</option>
+        <option value="EUR/JPY">EUR/JPY</option>
+        <option value="GBP/JPY">GBP/JPY</option>
+        <option value="GBP/CHF">GBP/CHF</option>
+        <option value="AUD/JPY">AUD/JPY</option>
+        <option value="AUD/NZD">AUD/NZD</option>
+        <option value="CHF/JPY">CHF/JPY</option>
+        <option value="NZD/JPY">NZD/JPY</option>
+        <option value="CAD/JPY">CAD/JPY</option>
+        <option value="EUR/AUD">EUR/AUD</option>
+        <option value="EUR/CAD">EUR/CAD</option>
+        <option value="GBP/AUD">GBP/AUD</option>
+        <option value="GBP/CAD">GBP/CAD</option>
+        <option value="AUD/CAD">AUD/CAD</option>
+      </optgroup>
+      <optgroup label="Exotics">
+        <option value="USD/SEK">USD/SEK</option>
+        <option value="USD/NOK">USD/NOK</option>
+        <option value="USD/DKK">USD/DKK</option>
+        <option value="USD/TRY">USD/TRY</option>
+        <option value="USD/ZAR">USD/ZAR</option>
+        <option value="USD/MXN">USD/MXN</option>
+        <option value="EUR/TRY">EUR/TRY</option>
+        <option value="EUR/ZAR">EUR/ZAR</option>
+        <option value="GBP/TRY">GBP/TRY</option>
+        <option value="GBP/ZAR">GBP/ZAR</option>
+        <option value="AUD/SGD">AUD/SGD</option>
+        <option value="NZD/SGD">NZD/SGD</option>
+      </optgroup>
+      <optgroup label="Metais & Commodities">
+        <option value="XAU/USD">XAU/USD (Ouro)</option>
+        <option value="XAG/USD">XAG/USD (Prata)</option>
+        <option value="USO/USD">Petróleo Brent</option>
+        <option value="USOIL">Petróleo WTI</option>
+      </optgroup>
+    </select>
+
+    <label>Escolha o tempo gráfico:</label>
+    <select id="tempoGrafico">
+      <option value="M1">M1</option>
+      <option value="M5">M5</option>
+      <option value="M15">M15</option>
+    </select>
+
+    <label>Selecione a plataforma:</label>
+    <select id="plataforma">
+      <option value="Exness">Exness</option>
+      <option value="Metatrader5">Metatrader 5</option>
+      <option value="Binance">Binance</option>
+    </select>
+
+    <label>Adicionar imagem do gráfico (1 a cada 120s):</label>
+    <input type="file" id="grafico" accept="image/*">
+    <button onclick="uploadImagem()">Enviar Imagem</button>
+    <div id="uploadMsg" class="message"></div>
+
+    <div id="resultado" class="message"></div>
+    <div class="percent" id="percentAcerto">Percentual de acerto: 0%</div>
+
+    <button onclick="operar()">Operar</button>
+  </div>
+
+  <!-- Sons -->
+  <audio id="audioSucesso" src="https://www.soundjay.com/buttons/sounds/button-3.mp3"></audio>
+  <audio id="audioErro" src="https://www.soundjay.com/buttons/sounds/button-10.mp3"></audio>
+
+</div>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+
+<script>
+  // ===== CONFIG FIREBASE =====
+  const firebaseConfig = {
+    apiKey: "SUA_API_KEY",
+    authDomain: "SEU_DOMINIO.firebaseapp.com",
+    projectId: "SEU_PROJECT_ID",
+    storageBucket: "SEU_STORAGE_BUCKET",
+    messagingSenderId: "SEU_MESSAGING_ID",
+    appId: "SEU_APP_ID"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const storage = firebase.storage();
+
+  // ===== REGISTRO =====
+  function registrar() {
+    const email = document.getElementById("email").value;
+    const senha = document.getElementById("senha").value;
+    const msg = document.getElementById("loginMsg");
+
+    auth.createUserWithEmailAndPassword(email, senha)
+      .then(() => {
+        msg.innerHTML = "Conta criada com sucesso!";
+        msg.className = "message success";
+      })
+      .catch(error => {
+        msg.innerHTML = error.message;
+        msg.className = "message error";
+        document.getElementById('audioErro').play();
+      });
+  }
+
+  // ===== LOGIN =====
+  function login() {
+    const email = document.getElementById("email").value;
+    const senha = document.getElementById("senha").value;
+    const msg = document.getElementById("loginMsg");
+
+    auth.signInWithEmailAndPassword(email, senha)
+      .then(() => {
+        document.getElementById("loginDiv").classList.add("hidden");
+        document.getElementById("roboDiv").classList.remove("hidden");
+        document.getElementById('audioSucesso').play();
+      })
+      .catch(() => {
+        msg.innerHTML = "Email ou senha incorretos!";
+        msg.className = "message error";
+        document.getElementById('audioErro').play();
+      });
+  }
+
+  // ===== PROTEÇÃO =====
+  auth.onAuthStateChanged(user => {
+    if (!user) {
+      document.getElementById("loginDiv").classList.remove("hidden");
+      document.getElementById("roboDiv").classList.add("hidden");
+    }
+  });
+
+  // ===== UPLOAD DE IMAGEM =====
+  let lastUpload = 0;
+  function uploadImagem() {
+    const arquivo = document.getElementById('grafico').files[0];
+    const msg = document.getElementById('uploadMsg');
+    const agora = Date.now();
+
+    if(!arquivo) {
+      msg.innerHTML = "Selecione uma imagem!";
+      msg.className = "message error";
+      document.getElementById('audioErro').play();
+      return;
+    }
+
+    if(agora - lastUpload < 120000) {
+      msg.innerHTML = "Aguarde 120 segundos para enviar outra imagem.";
+      msg.className = "message error";
+      document.getElementById('audioErro').play();
+      return;
+    }
+
+    lastUpload = agora;
+    const userId = auth.currentUser.uid;
+    const uploadRef = storage.ref(`uploads/${userId}/${arquivo.name}`);
+
+    uploadRef.put(arquivo).then(() => {
+      msg.innerHTML = "Imagem enviada com sucesso! Robo analisando...";
+      msg.className = "message success";
+      document.getElementById('audioSucesso').play();
+
+      // Simula análise do robô
+      setTimeout(() => {
+        const resultado = document.getElementById('resultado');
+        const sinais = ["COMPRA", "VENDA", "ESPERAR"];
+        const random = sinais[Math.floor(Math.random() * sinais.length)];
+        resultado.innerHTML = `Sinal do Robô: <b>${random}</b>`;
+        // Percentual de acerto simulado
+        const percent = Math.floor(Math.random()*30+70);
+        document.getElementById('percentAcerto').innerHTML = `Percentual de acerto: ${percent}%`;
+      }, 2000);
+    }).catch(err => {
+      msg.innerHTML = "Erro no upload!";
+      msg.className = "message error";
+      document.getElementById('audioErro').play();
+    });
+  }
+
+  // ===== BOTÃO OPERAR =====
+  function operar() {
+    window.open("https://my.assexmarkets.com/auth/register?partner_code=5349752", "_blank");
+  }
+</script>
+
+</body>
+</html>
